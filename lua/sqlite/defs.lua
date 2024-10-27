@@ -48,8 +48,14 @@ local clib = (function()
       end
 
       if os.sysname == "Darwin" then
-        return os.machine == "arm64" and "/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib"
-          or "/usr/local/opt/sqlite3/lib/libsqlite3.dylib"
+        local lib_path
+        if os.arch == "arm64" then
+          local brew_prefix = luv.getenv "HOMEBREW_PREFIX" or "/opt/homebrew"
+          lib_path = brew_prefix .. "/opt/sqlite"
+        else
+          lib_path = "/usr/local/opt/sqlite3"
+        end
+        return lib_path .. "/lib/libsqlite3.dylib"
       end
     end)()
 
